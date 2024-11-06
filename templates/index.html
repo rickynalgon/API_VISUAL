@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Gestión de Alumnos</title> 
+    <link rel="stylesheet" href="../static/styles.css"> 
+    <script>
+        const API_URL = "http://127.0.0.1:5000/alumnos"; //URL API
+
+        // Obtener la lista de alumnos desde la API
+        async function getAlumnos() {
+            const response = await fetch(API_URL); // Realiza una solicitud GET a la API
+            const alumnos = await response.json(); // Convierte la respuesta en formato JSON
+            const alumnosList = document.getElementById("alumnos-list"); // Obtiene la referencia a la tabla de alumnos
+            alumnosList.innerHTML = ""; // Limpia el contenido actual de la tabla
+            alumnos.forEach(alumno => { // Itera sobre cada alumno en la lista
+                const item = document.createElement("tr"); // Crea una nueva fila para la tabla
+                item.innerHTML = `
+                    <td>${alumno.id}</td> <!-- Muestra el ID del alumno -->
+                    <td>${alumno.name}</td> <!-- Muestra el nombre del alumno -->
+                    <td>${alumno.carrera}</td> <!-- Muestra la carrera del alumno -->
+                    <td>${alumno.edad}</td> <!-- Muestra la edad del alumno -->
+                    <td>
+                        <button onclick="setUpdateForm(${alumno.id}, '${alumno.name}', '${alumno.carrera}', ${alumno.edad})">Actualizar</button> <!-- Botón para actualizar el alumno -->
+                        <button onclick="deleteAlumno(${alumno.id})">Eliminar</button> <!-- Botón para eliminar el alumno -->
+                    </td>
+                `;
+                alumnosList.appendChild(item); // Añade la nueva fila a la tabla
+            });
+        }
+
+        // Función para agregar un nuevo alumno
+        async function addAlumno() {
+            // Obtiene los valores de los campos del formulario
+            const name = document.getElementById("add-name").value; 
+            const carrera = document.getElementById("add-carrera").value; 
+            const edad = document.getElementById("add-edad").value; 
+
+            // Realiza una solicitud POST para agregar el nuevo alumno
+            const response = await fetch(API_URL, {
+                method: 'POST', // Método de la solicitud
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, // Especifica el tipo de contenido
+                body: new URLSearchParams({ name, carrera, edad }) // Envía los datos del alumno en formato URL encoded
+            });
+
+            if (response.ok) { // Si la respuesta es exitosa
+                alert("Alumno agregado con éxito"); // Muestra un mensaje de éxito
+                getAlumnos(); // Actualiza la lista de alumnos
+                clearForm('add-form'); // Limpia el formulario de agregar
+            } else {
+                alert("Error al agregar el alumno"); // Muestra un mensaje de error
+            }
+        }
+
+        // Función para actualizar un alumno existente
+        async function updateAlumno(id) {
+            // Obtiene los valores de los campos del formulario de actualización
+            const name = document.getElementById("update-name").value; 
+            const carrera = document.getElementById("update-carrera").value; 
+            const edad = document.getElementById("update-edad").value; 
+
+            // Realiza una solicitud PUT para actualizar el alumno
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT', // Método de la solicitud
+                headers: { 'Content-Type': 'application/json' }, // Especifica el tipo de contenido
+                body: JSON.stringify({ name, carrera, edad }) // Envía los datos del alumno en formato JSON
+            });
+
+            if (response.ok) { // Si la respuesta es exitosa
+                alert("Alumno actualizado con éxito"); // Muestra un mensaje de éxito
+                getAlumnos(); // Actualiza la lista de alumnos
+                clearForm('update-form'); // Limpia el formulario de actualización
+            } else {
+                alert("Error al actualizar el alumno"); // Muestra un mensaje de error
+            }
+        }
+
+        // Función para eliminar un alumno
+        async function deleteAlumno(id) {
+            // Realiza una solicitud DELETE para eliminar el alumno
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE' // Método de la solicitud
+            });
+
+            if (response.ok) { // Si la respuesta es exitosa
+                alert("Alumno eliminado correctamente"); // Muestra un mensaje de éxito
+                getAlumnos(); // Actualiza la lista de alumnos
+            } else {
+                alert("Error al eliminar el alumno"); // Muestra un mensaje de error
+            }
+        }
+
+        // Función para llenar el formulario de actualización con los datos del alumno seleccionado
+        function setUpdateForm(id, name, carrera, edad) {
+            document.getElementById("update-id").value = id; // Establece el ID del alumno en el campo oculto
+            document.getElementById("update-name").value = name; // Establece el nombre en el campo correspondiente
+            document.getElementById("update-carrera").value = carrera; // Establece la carrera en el campo correspondiente
+            document.getElementById("update-edad").value = edad; // Establece la edad en el campo correspondiente
+        }
+
+        // Función para limpiar los campos de un formulario
+        function clearForm(formId) {
+            const inputs = document.querySelectorAll(`#${formId} input`); // Obtiene todos los inputs del formulario especificado
+            inputs.forEach(input => input.value = ''); // Limpia el valor de cada input
+        }
+
+        // Evento que se ejecuta cuando se carga la página
+        document.addEventListener('DOMContentLoaded', getAlumnos); // Obtiene la lista de alumnos al cargar la página
+    </script>
+</head>
+<body>
+    <h1>Gestión de Alumnos</h1> <!-- Título principal de la página -->
+
+    <div>
+        <h2>Lista de Alumnos</h2> 
+        <table> 
+            <thead> 
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Carrera</th> 
+                    <th>Edad</th> 
+                    <th>Acciones</th> 
+                </tr>
+            </thead>
+            <tbody id="alumnos-list"> <!-- Cuerpo de la tabla donde se cargarán los alumnos -->
+                <!-- Los alumnos se cargarán aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Formulario para agregar un alumno -->
+    <div>
+        <h2>Agregar Alumno</h2> 
+        <form id="add-form" onsubmit="event.preventDefault(); addAlumno();">
+            <label for="add-name">Nombre:</label>
+            <input type="text" id="add-name" required><br>
+            <label for="add-carrera">Carrera:</label> 
+            <input type="text" id="add-carrera" required><br>
+            <label for="add-edad">Edad:</label> 
+            <input type="number" id="add-edad" required><br>
+            <button type="submit">Agregar</button>
+        </form>
+    </div>
+
+    <!-- Formulario para actualizar un alumno -->
+    <div>
+        <h2>Actualizar Alumno</h2> 
+        <form id="update-form" onsubmit="event.preventDefault(); updateAlumno(document.getElementById('update-id').value);"> 
+            <input type="hidden" id="update-id"> 
+            <label for="update-name">Nombre:</label> 
+            <input type="text" id="update-name" required><br> 
+            <label for="update-carrera">Carrera:</label> 
+            <input type="text" id="update-carrera" required><br> 
+            <label for="update-edad">Edad:</label> 
+            <input type="number" id="update-edad" required><br> 
+            <button type="submit">Actualizar</button> 
+        </form>
+    </div>
+</body>
+</html>

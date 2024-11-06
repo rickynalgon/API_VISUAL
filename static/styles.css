@@ -1,0 +1,133 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Configuración del fondo y la estructura general */
+body {
+    background: linear-gradient(120deg, #f0f4f8, #d9e2ec);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Título principal */
+h1 {
+    font-size: 2.5em;
+    color: #005f73;
+    margin-bottom: 20px;
+}
+
+/* Estilo del menú de navegación */
+nav {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+nav button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #0a9396;
+    color: #ffffff;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+    background-color: #005f73;
+}
+
+/* Estilos para las secciones */
+.content {
+    display: none;
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animación para botones de acción */
+button {
+    background-color: #94d2bd;
+    color: #001219;
+    font-size: 1em;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #0a9396;
+    color: #ffffff;
+}
+
+/* Estilos de los formularios */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+    color: #005f73;
+}
+
+input[type="text"], input[type="number"] {
+    padding: 8px;
+    font-size: 1em;
+    border: 2px solid #d9e2ec;
+    border-radius: 5px;
+}
+
+/* Estilos para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table, th, td {
+    border: 1px solid #005f73;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #0a9396;
+    color: white;
+}
+
+td button {
+    background-color: #e63946;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background-color: #d90429;
+}
